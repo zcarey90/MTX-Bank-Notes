@@ -1,0 +1,29 @@
+{
+  "name": "MTX-Bank-Notes",
+  "version": "1.0.0",
+  "description": "pulling information off scanned bank notes using OCR",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zcarey90/MTX-Bank-Notes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zcarey90/MTX-Bank-Notes/issues"
+  },
+  "homepage": "https://github.com/zcarey90/MTX-Bank-Notes#readme",
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "tesseract.js": "^2.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
