@@ -1,14 +1,14 @@
-const { worker } = require("cluster");
+// const { worker } = require("cluster");
 const express = require("express");
 const app = express();
 const fs = require("fs");
 const multer = require("multer");
-const createWorker = require("tesseract.js");
-// const worker = createWorker();
-// const { createWorker } = Tesseract;
-// const { TesseractWorker } = require("tesseract.js");
+const { createWorker } = require("tesseract.js");
+const worker = createWorker();
+// const worker = new TesseractWorker();
+// const {createWorker = new TesseractWorker();
 // const createWorker = new createWorker();
-// Storage
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./uploads");
