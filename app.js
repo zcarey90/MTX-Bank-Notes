@@ -28,23 +28,36 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.post("/upload", (req, res) => {
-  upload(req, res, (err) => {
-    fs.readFile(`./uploads/${req.file.originalname}`, (err, data) => {
-      if (err) return console.log("This is your error", err);
+// app.post("/upload", (req, res) => {
+//   upload(req, res, (err) => {
+//     fs.readFile(`./uploads/${req.file.originalname}`, (err, data) => {
+//       if (err) return console.log("This is your error", err);
 
-      worker
-        .recognize(data, "eng", { tessjs_create_pdf: "1" })
-        .progress((progress) => {
-          console.log(progress);
-        })
-        .then((result) => {
-          res.redirect("/download");
-        })
-        .finally(() => worker.terminate());
-    });
-  });
-});
+//       worker
+//         .recognize(data, "eng", { tessjs_create_pdf: "1" })
+//         .progress((progress) => {
+//           console.log(progress);
+//         })
+//         .then((result) => {
+//           res.redirect("/download");
+//         })
+//         .finally(() => worker.terminate());
+//     });
+//   });
+// });
+
+(async () => {
+  await worker.load();
+  await worker.loadLanguage("eng");
+  await worker.initialize("eng");
+  const {
+    data: { text },
+  } = await worker.recognize(
+    "https://tesseract.projectnaptha.com/img/eng_bw.png"
+  );
+  console.log(text);
+  await worker.terminate();
+})();
 
 app.get("/download", (req, res) => {
   const file = `${__dirname}/tesseract.js-ocr-result.pdf`;
