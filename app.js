@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 
 app.post("/upload", (req, res) => {
   upload(req, res, (err) => {
-    fs.readFile(`./uploads/${req.file.orginalname}`, (err, data) => {
+    fs.readFile(`./uploads/${req.file.originalname}`, (err, data) => {
       if (err) return console.log("This is your error", err);
 
       createWorker
@@ -47,4 +47,4 @@ app.post("/upload", (req, res) => {
 // Start up our server
 
 const PORT = 5000 || process.env.PORT;
-app.listen(PORT, () => console.log("Hey I am running on port ${PORT}"));
+app.listen(PORT, () => console.log(`Hey I am running on port ${PORT}`));
