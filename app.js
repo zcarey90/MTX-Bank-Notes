@@ -4,8 +4,10 @@ const app = express();
 const fs = require("fs");
 const multer = require("multer");
 const createWorker = require("tesseract.js");
+// const worker = createWorker();
+// const { createWorker } = Tesseract;
 // const { TesseractWorker } = require("tesseract.js");
-// const worker = new TesseractWorker();
+// const createWorker = new createWorker();
 // Storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -31,7 +33,7 @@ app.post("/upload", (req, res) => {
     fs.readFile(`./uploads/${req.file.originalname}`, (err, data) => {
       if (err) return console.log("This is your error", err);
 
-      createWorker
+      worker
         .recognize(data, "eng", { tessjs_create_pdf: "1" })
         .progress((progress) => {
           console.log(progress);
