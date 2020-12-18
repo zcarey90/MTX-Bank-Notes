@@ -1,3 +1,4 @@
+const { worker } = require("cluster");
 const express = require("express");
 const app = express();
 const fs = require("fs");
@@ -27,7 +28,19 @@ app.get("/", (req, res) => {
 
 app.post("/upload", (req, res) => {
   upload(req, res, (err) => {
-    console.log(req.file);
+    fs.readFile(`./uploads/${req.file.orginalname}`, (err, data) => {
+      if (err) return console.log("This is your error", err);
+
+      createWorker
+        .recognize(data, "eng", { tessjs_create_pdf: "1" })
+        .progress((progress) => {
+          console.log(progress);
+        })
+        .then((result) => {
+          res.send(result.text);
+        })
+        .finally(() => createWorker.terminate());
+    });
   });
 });
 
