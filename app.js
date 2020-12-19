@@ -4,7 +4,27 @@ const app = express();
 const fs = require("fs");
 const multer = require("multer");
 const { createWorker } = require("tesseract.js");
+// const path = require("image-path");
+
+// const worker = createWorker({
+//   langPath: path.join(__dirname, "..", "uploads"),
+//   logger: (m) => console.log(m),
+// });
+
+// (async () => {
+//   await worker.load();
+//   await worker.loadLanguage("eng");
+//   await worker.initialize("eng");
+//   const {
+//     data: { text },
+//   } = await worker.recognize("image-path");
+//   console.log(text);
+//   await worker.terminate();
+// })();
+// const { createWorker } = require("tesseract.js");
 const worker = createWorker();
+const PSM = require("tesseract.js/src/constants/PSM.js");
+
 // const worker = new TesseractWorker();
 // const {createWorker = new TesseractWorker();
 // const createWorker = new createWorker();
@@ -28,41 +48,44 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-// app.post("/upload", (req, res) => {
-//   upload(req, res, (err) => {
-//     fs.readFile(`./uploads/${req.file.originalname}`, (err, data) => {
-//       if (err) return console.log("This is your error", err);
+app.post("/upload", (req, res) => {
+  upload(req, res, (err) => {
+    fs.readFile(`./uploads/${req.file.originalname}`, (err, data) => {
+      if (err) return console.log("This is your error", err);
 
-//       worker
-//         .recognize(data, "eng", { tessjs_create_pdf: "1" })
-//         .progress((progress) => {
-//           console.log(progress);
-//         })
-//         .then((result) => {
-//           res.redirect("/download");
-//         })
-//         .finally(() => worker.terminate());
-//     });
-//   });
-// });
+      worker
+        .recognize(data, "eng", { tessjs_create_pdf: "1" })
+        .progress((progress) => {
+          console.log(progress);
+        })
+        .then((result) => {
+          res.redirect("/download");
+        })
+        .finally(() => worker.terminate());
+    });
+  });
+});
 
-(async () => {
+async function getTextFromImage() {
   await worker.load();
   await worker.loadLanguage("eng");
   await worker.initialize("eng");
+  await worker.setParameters({
+    tessedit_pageseg_mode: PSM.AUTO,
+  });
   const {
     data: { text },
-  } = await worker.recognize(
-    "https://tesseract.projectnaptha.com/img/eng_bw.png"
-  );
-  console.log(text);
+  } = await worker.recognize("./uploads/Afghanistan Bank Notes_003.jpg");
   await worker.terminate();
-})();
 
-app.get("/download", (req, res) => {
-  const file = `${__dirname}/tesseract.js-ocr-result.pdf`;
-  res.download(file);
-});
+  return text;
+}
+getTextFromImage().then(console.log);
+
+// app.get("/download", (req, res) => {
+//   const file = `${__dirname}/tesseract.js-ocr-result.pdf`;
+//   res.download(file);
+// });
 
 // Start up our server
 
